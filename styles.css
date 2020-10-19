@@ -1,195 +1,191 @@
-<style>
+html { height:100%; }
+
+body {
+    
+    background-color: white;   
+    margin:0px;
+    height:100%;
+    overflow:hidden;
+    
+}
+
+.title {
+    position: absolute;
+    font-size: 32px;
+    font-family: Verdana;
+    top: 3%;
+    left: 3%;
+    color: darkgray;
+    margin:0px;
+    
+}
+
+.upgradeTxt {
+    
+    position: absolute;
+    font-size:16px;
+    font-family:Verdana;
+    left:3%;
+    color:darkgray;
+    margin:0px;
+    cursor:pointer;
+    
+}
+
+.upgradeTitle {
+    
+    position:absolute;
+    left:3%;
+    font-family:Verdana;
+    font-size:12px;
+    top:1%;
+    color:darkgray;
+    margin:0px;
+    
+}
+
+.fallingImg {
+    
+    position:absolute;
+    height:10%;
+    width:10%;
+    
+}
             
-            html { height:100%; }
-            
-            body {
-                
-                background-color: white;   
-                margin:0px;
-                height:100%;
-                overflow:hidden;
-                
-            }
-            
-            .title {
-                position: absolute;
-                font-size: 32px;
-                font-family: Verdana;
-                top: 3%;
-                left: 3%;
-                color: darkgray;
-                margin:0px;
-                
-            }
-            
-            .upgradeTxt {
-                
-                position: absolute;
-                font-size:16px;
-                font-family:Verdana;
-                left:3%;
-                color:darkgray;
-                margin:0px;
-                cursor:pointer;
-                
-            }
-            
-            .upgradeTitle {
-                
-                position:absolute;
-                left:3%;
-                font-family:Verdana;
-                font-size:12px;
-                top:1%;
-                color:darkgray;
-                margin:0px;
-                
-            }
-            
-            .fallingImg {
-                
-                position:absolute;
-                height:10%;
-                width:10%;
-                
-            }
-                        
-            .excrement {
-            
-            	position: absolute;
-            	height:5%;
-            	width:5%;
-            	cursor: pointer;
-            	 
-            }
-            
-            .alertMsg {
-                
-                position: absolute;
-                left: 30%;
-                margin:0px;
-                font-style:Verdana;
-                font-size: 16px;
-                color: deeppink;
-                
-            }
-            
-            .gas {
-            	
-            	position: absolute;
-            	margin:0px;
-            	background-color:lightgreen;
-            	display:block;
-            	border-radius:100%;
-            	width:4%;
-            	height:4%;
-            	margin:0px;
-            	
-            }
-            
-            .bird {
-            	
-            	position:absolute;
-            	margin:0px;
-            	width:9.77%;
-            	height:10%;
-            	cursor:pointer;
-            	
-            }
-            
-            #the_dog {
-                
-                margin: 0px;
-                position:absolute;
-                top:calc(50% - 160px);
-                left:calc(50% - 240px);
-                cursor:pointer;
-                
-            }
-            
-            #barks {
-                 
-                position: absolute;
-                top: 90%;
-                left: 95%;
-                margin: 0px;
-                color: hotpink;
-                font-size: 32px;
-                font-family: Verdana;
-                
-            }
-            
-            #upgrades {
-                
-                position: absolute;
-                top: 10%;
-                left: 1%;
-                height:80%;
-                width:20%;
-                border-style:solid;
-                margin: 0px;
-                border-color: lightgray;
-                
-            }
-            
-            #overlay {
-            	
-            	position: relative;
-            	top:0px;
-            	left:0px;
-            	height:100vh;
-            	width:100%;
-            	margin:0px;
-            	color:white;
-            	background-color: rgba(0,0,0,0.5);
-            	z-index:1;
-            	
-            }
-            
-            #importantMsgBox {
-            	
-            	position: absolute;
-            	top:35%;
-            	left:35%;
-            	height:30%;
-            	width:30%;
-            	background-color:white;
-            	z-index:2;
-            	border-style:solid;
-            	border-width:1px;
-            	
-            }
-            
-            #importantMsgBoxText {
-            	
-            	position: relative;
-            	margin: 3%;
-            	color: gray;
-            	font-size: 18px;
-            	font-family: Verdana;
-            	
-            }
-            
-            #importantMsgBoxButton {
-            
-            	position: absolute;
-            	top:44%;
-            	left:44%;
-            	height:12%;
-            	width:12%;
-            	font-size:13px;
-            	font-family: Tahoma;
-            
-            }
-            
-            #gasSafezone {
-                
-                position: absolute;
-                height:15%;
-                width:15%;
-                background-color: lightblue;
-                z-index:1;
-                
-            }
-            
-        </style>
+.excrement {
+
+	position: absolute;
+	height:5%;
+	width:5%;
+	cursor: pointer;
+	 
+}
+
+.alertMsg {
+    
+    position: absolute;
+    left: 30%;
+    margin:0px;
+    font-style:Verdana;
+    font-size: 16px;
+    color: deeppink;
+    
+}
+
+.gas {
+	
+	position: absolute;
+	margin:0px;
+	background-color:lightgreen;
+	display:block;
+	border-radius:100%;
+	width:4%;
+	height:4%;
+	margin:0px;
+	
+}
+
+.bird {
+	
+	position:absolute;
+	margin:0px;
+	width:9.77%;
+	height:10%;
+	cursor:pointer;
+	
+}
+
+#the_dog {
+    
+    margin: 0px;
+    position:absolute;
+    top:calc(50% - 160px);
+    left:calc(50% - 240px);
+    cursor:pointer;
+    
+}
+
+#barks {
+     
+    position: absolute;
+    top: 90%;
+    left: 95%;
+    margin: 0px;
+    color: hotpink;
+    font-size: 32px;
+    font-family: Verdana;
+    
+}
+
+#upgrades {
+    
+    position: absolute;
+    top: 10%;
+    left: 1%;
+    height:80%;
+    width:20%;
+    border-style:solid;
+    margin: 0px;
+    border-color: lightgray;
+    
+}
+
+#overlay {
+	
+	position: relative;
+	top:0px;
+	left:0px;
+	height:100vh;
+	width:100%;
+	margin:0px;
+	color:white;
+	background-color: rgba(0,0,0,0.5);
+	z-index:1;
+	
+}
+
+#importantMsgBox {
+	
+	position: absolute;
+	top:35%;
+	left:35%;
+	height:30%;
+	width:30%;
+	background-color:white;
+	z-index:2;
+	border-style:solid;
+	border-width:1px;
+	
+}
+
+#importantMsgBoxText {
+	
+	position: relative;
+	margin: 3%;
+	color: gray;
+	font-size: 18px;
+	font-family: Verdana;
+	
+}
+
+#importantMsgBoxButton {
+
+	position: absolute;
+	top:44%;
+	left:44%;
+	height:12%;
+	width:12%;
+	font-size:13px;
+	font-family: Tahoma;
+
+}
+
+#gasSafezone {
+    
+    position: absolute;
+    height:15%;
+    width:15%;
+    background-color: lightblue;
+    z-index:1;
+    
+}
