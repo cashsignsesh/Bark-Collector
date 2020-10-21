@@ -95,6 +95,57 @@ body {
 	
 }
 
+.clinic_item {
+	
+	left:0%;
+	height:15%;
+	width: calc (100% - 3px);
+	z-index:4;
+	border-style:solid;
+	border-color:white;
+	border-width:2px;
+	margin: 1%;
+	position: relative;
+	
+}
+
+.clinic_item_title {
+	
+	position: relative;
+	font-family: Verdana;
+	font-size: 22px;
+	top: calc(1% + 9px);
+	left:1%;
+	margin:0%;
+	color:white;
+	
+}
+
+.clinic_item_description {
+	
+	position: relative;
+	font-family: Arial;
+	font-size: 11px;
+	top:10%;
+	left:1%;
+	margin:0%;
+	color:white;
+	width: 30%;
+	
+}
+
+.clinic_item_purchase {
+	
+	position: absolute;
+	top: 70%;
+	width: 144px;
+	font-family: Verdana;
+	font-size: 18px;
+	margin:0%;
+	left:1%;
+	
+}
+
 #the_dog {
     
     margin: 0px;
@@ -109,7 +160,7 @@ body {
      
     position: absolute;
     top: 90%;
-    left: 95%;
+    left: 90%;
     margin: 0px;
     color: hotpink;
     font-size: 32px;
@@ -188,4 +239,42 @@ body {
     background-color: lightblue;
     z-index:1;
     
+}
+
+#clinic {
+    
+    position: absolute;
+    height:180px;
+    width:180px;
+    cursor:pointer;
+    top:0%; 
+    left: calc(100% - 180px);
+    
+}
+
+#clinic_overlay {
+	
+	position: absolute;
+	top:0%;
+	left:0%;
+	height:100%;
+	width:100%;
+	background-color:lightgray;
+	z-index:3;
+	
+}
+
+#clinic_exit {
+	
+	position: absolute;
+	top:0%;
+	left: calc(100% - 86px);
+	height:80px;
+	width:80px;
+	border-color:black;
+	border-style:solid;
+	border-width:3px;
+	cursor:pointer;
+	z-index:5;
+	
 }
