@@ -8,14 +8,16 @@
 
     $("body").on("click","#bird",clickedBird);
     $("body").on("click","#bird0",clickedBird0);
+    
+    $("body").arrive("*",newNode);
 
     //Main tracker variables
     var barks=0,fxTracker=0,upgradeBoxTracker=14,friends=0,dogFood=0,megaphones=0,dogToys=0,birdHuntingGroups=0,robotDogs=0,
         clinics=0,
-        experiencedPoisonGas=false,guiLocked=false,experiencedBirdHunting=false;
+        experiencedPoisonGas=false,guiLocked=false,experiencedBirdHunting=false,oxyCotton=false,adderall=false;
 
     //Incrementors
-    var mainDogIncrementor=1,alertCtr=0;
+    var mainDogIncrementor=1,alertCtr=0,oxyCottonUses=0,adderallUses=0;
 
     //Unlocks
     var unlockedUpgradesBox=false,unlockedDogFood=false,unlockedMegaphone=false,unlockedBirdHuntingP=false,unlockedBirdHunting=false,unlockedRobotDog=false,unlockedClinic=false;
@@ -30,8 +32,8 @@
     //Other
     var clinicItems = [];
 
-    function mainDogClick (hardFx=true) {
-
+    function mainDogClick (hardFx) {
+		
         bark(mainDogIncrementor);
         ++fxTracker;
         chkEffects(hardFx);
@@ -115,18 +117,21 @@
 
         /*
                     Ideas for future purchases:
-                    Human mind control machine (later in game probably, maybe makes everything cheaper by /2 per purchase apart from itself, unlock casino as side effect and execute in way similar to clinic, also 25% chance to fail, if it does fail 50/50 to: mind control unexpected behaviour, humans went insane or mind control didn't work, humans are mad)
-                    Robot dog (Auto bark? very slow, high increase in price and ignore any events like toxic gas. 10k?)
-                    Take over veterinarian clinic (Drops medicine occasionally, including LSD)
+                    Something for 100k, milestone at 30k
+                    Human mind control machine (250k cost, maybe makes everything cheaper by /2 per purchase apart from itself, unlock casino as side effect and execute in way similar to clinic, also (unless first purchase) 25% chance to fail, if it does fail 50/50 to: mind control unexpected behaviour, humans went insane or mind control didn't work, humans are mad and taking 7% of your barks per second for 60 seconds)
+        			Something for 2.5m,milestone at 300k
+        			Something for 10m, adds semi often minigame where if you lose then you lose the game and are forced to restart(or set back far?), semi hard
+        			Something for 100m, absurdly difficult minigame that occurs one bark after purchase and after that fxTracker%1000, and when you win you beat the game
         */
-
+        
         //Also TODO:: add a question mark symbol that when hovered over or clicked shows the user information about the item.
         //Also TODO:: make upgrades more expensive overtime?
         //Also TODO:: disable selecting elements on screen
         //Also TODO:: add a box with z-index 1 higher than pink alert text over the dog, with cursor:pointer, transparent and make that be the thing you click to bark
-        //Also TODO:: add multiplier like buy 1x 2x 10x 50x 100x at a time, at purchase add while loop
+        //Also TODO:: add multiplier like buy 1x 2x 10x 50x 100x at a time, at purchase add new func with while loop of buy whatever to include the difference for price increment
         //Also TODO:: bird hunting reward needs to be reevaluated.. sometimes way too high sometimes way too low, also make birds appear slightly more often
-
+        //Also TODO:: maybe random chance 1%~ to spawn a gold nugget increasing barks by 10%(calculated at spawntime) every hardFx click?
+		
         /*
                         Rough ideas for price increases:
                         Friend             *1.1 of original
@@ -139,7 +144,7 @@
 
     }
 
-    function chkEffects (hardFx) {
+    function chkEffects (hardFx=true) {
 
         if (fxTracker%3==0) {
 
@@ -192,6 +197,10 @@
                         --dropZonesCtr;
 
                     }
+                    
+                    var speed=((oxyCotton)?51:17);
+                    if (adderall) speed*=0.5;
+                    
                     var ctDown=setInterval(function () {
 
                         if (pos==140) { 
@@ -204,7 +213,7 @@
 
                         ++pos;
 
-                    },17);
+                    },speed);
 
                 }
             }
@@ -214,7 +223,7 @@
 
         if ((fxTracker%50==0)&&(birdHuntingGroups>0)) {
             
-            if (!(experiencedBirdHunting)&&!(hardFx)) {
+            if (!(experiencedBirdHunting)&&hardFx) {
 
                 experiencedBirdHunting=true;
                 addOverlay();
@@ -274,10 +283,13 @@
 
     function collectedDogFood () {
 
-        var originalFood=dogFood*2;
-        var gainedBarks=10+(originalFood-friends);
+        var originalFood=dogFood*2,gainedBarks=0;
+        
+        if (oxyCotton) gainedBarks=10+(originalFood-(friends*(1/(clinics+1))));
+        else gainedBarks=10+(originalFood-friends);
+        
         if (gainedBarks<0)gainedBarks=0;
-
+		
         alert("You barked "+originalFood.toString()+" times for your food, but had to share with "+friends.toString()+" friends!");
 
         bark(gainedBarks);
@@ -480,8 +492,9 @@
         alert("You suffocated in gas!");
         clearCollection(htmlCol);
         document.body.removeChild(document.getElementById("gasSafezone"));
-
-        bark(-barks);//:(
+		
+		if (oxyCotton) barks(-(barks/2));
+        else bark(-barks);//:(
 
     }
 
@@ -532,6 +545,9 @@
         bird0.setAttribute("id","bird0");
         bird0.setAttribute("src","bird.png");
         document.body.appendChild(bird);
+        
+        var speed=((oxyCotton)?57:19);
+        if (adderall) speed*=0.5;
 
         tmr=setInterval(function () {
 
@@ -548,7 +564,7 @@
 
             ++i;
 
-        },19);
+        },speed);
 
         if (birdHuntingGroups>4) {
 
@@ -600,7 +616,7 @@
         
         ++robotDogs;
         
-        setInterval (mainDogClick(false),10000);
+        setInterval (mdF,10000);
         
     }
 
@@ -638,6 +654,14 @@
     }
 
     function openClinicScreen () {
+    	
+    	if (oxyCotton) {
+    		
+    		addOverlay();
+    		displayBox("You didn't feel like going to the clinic as you decided it was cozy and warm enough at home. (Under the effects of oxycodone)","remOverlay()");
+    		return;
+    		
+    	}
         
         var overlay=document.createElement("div"),x=document.createElement("img");
         overlay.setAttribute("id","clinic_overlay");
@@ -649,34 +673,51 @@
         
         $(x).click(exitClinic);
         
-        addClinicItem("Oxycodone","This painkiller medicine will help clear up all pain and negative effects. Oxycodone will also make it easier for you to collect moving items. Oxycodone costs 100 friends on purchase.",purchaseOxycodone);
-        addClinicItem();
-        addClinicItem();
-        addClinicItem();
-        addClinicItem();
-        
-        //White border with z-index:3 height:100% width:100% top:0% left:0% is placed over screen
-        //Drugs to buy are listed on left of screen with information on all permanent and temporary effects (except psychedeic/visual/negative effects)
-        
-        //Buy one of 5 medicines:
-        //Oxycodone, xanax, acid, psilocybin, dimethyltryptamine
-        
-        //Make it cost things other than flat barks such as:
-        //Friends,% of barks, % of bark income temporarily
-            
-        //Make some have permanent effects such as friends becoming cheaper
+        addClinicItem("Oxycodone","This painkiller medicine will help clear up all pain and negative effects. Oxycodone will also make it easier for you to collect moving items. Effects last 2 minutes. Potential temporary side effects. Oxycodone costs you 100 friends on purchase.",purchaseOxycodone);
+        addClinicItem("Adderall","This stimulant medicine will make you get things done much quicker. Effects last 45 seconds. Potential temporary side effects. Adderall costs 1 megaphone on purchase and you will lose a small percentage of barks overtime during the effects.");
+        addClinicItem("Acid","This hallucinogenic medicine will cause you to understand humand mind control better, causing any mind control devices you purchase to be more effective while you are under the effects of acid. Effects last 3 minutes. There are other temporary undisclosed effects. Acid requires you to eat 50 dog food on purchase.");
+        addClinicItem("Psilocybin","This hallucinogenic medicine will cause clicking the main dog to be more effective. Effects last 3 minutes. There are other undisclosed temporary effects. Psilocybin requires you to eat 50 dog food on purchase.");
+        addClinicItem("Dimethyltryptamine","Nobody knows much about dimethyltryptamine, so the dog secretaries are freely handing it out to anyone experienced who has taken all oxycodone, adderall, acid and psilocybin at least once.");
         
         //More clinics = cheaper drugs & better positives from effects slightly* (but intensity is always at 100%)
         
         //On buy click, it returns to the main screen and the drug drops down from a supply crate that crashes open when it reaches 90%
         //top, and it's height:10%. Then, the drug will be left at 90%top, 10% height and when clicked the effects will ensue.
         
-        //Effects of oxy cotton (cheapest, costs friends):
-        //Reduce negative effects/subtractions (such as subtracting by friends when collecting food)
+        //Effects of oxy cotton (cheapest, costs 100 friends, 2 minute length):
+        //Reduce negative effects/subtractions relative to total clinics (such as subtracting by friends when collecting food)
         //Falling food & birds move slower
         //Everything on screen becomes slightly blurry
         //Can't visit pet shop, it will say "You decided to stay home where it is nice, warm and cozy."
+        //You only lose half of your barks when you die to gas
         //If negative debuffs like pain are added (ie human mind control failure) then this will fix it
+        
+        //Effects of adderall (costs 1 megaphone and you will lose 0.5% (1/200) of your current barks every second for the duration of the drug, 45 second length)
+        //When you click the dog, he barks twice
+        //Robot dogs work quicker relative to total clinics
+        //Birds and falling food move twice as quick
+        //Barking will cause the main dog to shake
+        //Cracked eyes will pop out on top of the dogs eyes
+        //Moving particles have wind trails behind them
+        
+        //Effects of acid (cost 50 food, 3 minute length)
+        //Background smoothly changing colour gradient
+        //Spaceships sometimes come by and if collected you gain friends relative to total clinics (100 friends * (total clinics/10))
+        //Purchasing human mind control devices are more effective during the effects relative to total clinics
+        
+        //Effects of psilocybin (cost 50 food, 3 minute length)
+        //Background smoothly changing between dark green/brown colours
+        //Sometimes see earth monsters walking on the ground or witches flying around, you have to click them to reduce their health and if you defeat them your barks multiply relative to total clinics
+        //While in combat, background loops between black/gray and red/dark red colours
+        //Gain only half as many barks for collecting excrement/dog food
+        //Clicking the main dog is twice as more effective during this time relative to total clinics
+        //Effects happen quicker (fxTracker += 2).
+        
+        //Effects of dimethyltryptamine (free, requires you to have taken all oxy cotton, adderall, acid and psilocybin once, one-time use) 
+        //Screen gets copied on itself (like 2 mirrors painting eachother)
+        //Screen zooms into center copy
+        //Temporarily enter dog heaven, can collect things like funky looking dogs, aliens, food to gain extremely high amounts of friends, barks and dog food respectively
+        //After some time, it fades out somehow and returns to the main screen
         
     }
     
@@ -717,12 +758,103 @@
     function exitClinic () {
     	
     	clearClinicItems();
-    	document.body.removeChild(document.getElementById("clinic_overlay"));
+    	try { document.body.removeChild(document.getElementById("clinic_overlay")); }
+   		catch { /* doesn't exist */ }
     	
     }
     
     function purchaseOxycodone () {
     	
+    	if (!(friends>99)) {
+    		
+    		displayBox("You were not able to afford the oxycodone! You need 100 friends","exitClinic()");
+    		return;
+    		
+    	}
+    	
     	exitClinic();
+    	friends-=100;
+    	
+    	takeOxycodone();
+    	
+    }
+    
+    function mdF () { mainDogClick(false); }
+    function setBlurry () { document.querySelectorAll("body *").forEach(setElemBlurry); }
+    function remBlurry () { document.querySelectorAll("body *").forEach(remElemBlurry); }
+    function setElemBlurry (elem) { elem.style.filter="blur(1.3px)"; }
+    function remElemBlurry (elem) { elem.style.filter=""; }
+    
+    function newNode (elem) {
+    	
+    	if (oxyCotton) setElemBlurry(elem);
+    	
+    }
+    
+    function takeOxycodone () {
+    	
+    	if (oxyCotton) {
+    		
+            addOverlay();
+            displayBox("The pill did nothing! You are already under the effects of oxycodone.","remOverlay()");
+    		return;
+    		
+    	}
+    	
+    	oxyCotton=true;
+    	setBlurry();
+    	alert("You took oxycodone");
+    	++oxyCottonUses;
+        
+    	var ctDown=setTimeout(function () {
+            
+            oxyCotton=false;
+            remBlurry();
+            alert("You can feel the oxycodone effects fade");
+            
+            clearTimeout(ctDown);
+
+        },120000);
+    	
+    }
+    
+    function purchaseAdderall () {
+    	
+    	if (!(megaphone>0)) {
+    		
+    		displayBox("You were not able to afford the adderall! You need 1 megaphone.","exitClinic()");
+    		return;
+    		
+    	}
+    	
+    	exitClinic();
+    	--megaphone;
+    	
+    	takeAdderall();
+    	
+    }
+    
+    function takeAdderall () {
+    	
+    	if (adderall) {
+    		
+            addAdderall();
+            displayBox("The pill did nothing! You are already under the effects of oxycodone.","remOverlay()");
+    		return;
+    		
+    	}
+    	
+    	adderall=true;
+    	alert("You took adderall");
+    	++adderallUses;
+        
+    	var ctDown=setTimeout(function () {
+            
+            adderall=false;
+            alert("You can feel the adderall effects fade");
+            
+            clearTimeout(ctDown);
+
+        },45000);
     	
     }
