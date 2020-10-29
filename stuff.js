@@ -1,5 +1,9 @@
 
     $("#the_dog").click(mainDogClick);
+    $("#the_dog").mousedown(mainDogAnim);
+    $("#the_dog").mouseup(mainDogAnim0);
+    $("#the_dog").mouseover(mainDogAnim1);
+    $("#the_dog").mouseleave(mainDogAnim2);
 
     $("body").on("mouseover",".fallingImg",remElemDOC);
     $("body").on("mouseover",".fallingImg",beginDigesting);
@@ -14,10 +18,11 @@
     //Main tracker variables
     var barks=0,fxTracker=0,upgradeBoxTracker=14,friends=0,dogFood=0,megaphones=0,dogToys=0,birdHuntingGroups=0,robotDogs=0,
         clinics=0,
-        experiencedPoisonGas=false,guiLocked=false,experiencedBirdHunting=false,oxyCotton=false,adderall=false;
+        experiencedPoisonGas=false,guiLocked=false,experiencedBirdHunting=false,oxyCotton=false,adderall=false,seenUfo=false,
+    	robotTasks=[];
 
     //Incrementors
-    var mainDogIncrementor=1,alertCtr=0,oxyCottonUses=0,adderallUses=0;
+    var mainDogIncrementor=1,alertCtr=0,oxyCottonUses=0,adderallUses=0,dog_rotate=7;
 
     //Unlocks
     var unlockedUpgradesBox=false,unlockedDogFood=false,unlockedMegaphone=false,unlockedBirdHuntingP=false,unlockedBirdHunting=false,unlockedRobotDog=false,unlockedClinic=false;
@@ -28,22 +33,27 @@
 
     //Elements
     var boxElem,boxTitle,upgrade_friend,upgrade_dogFood,upgrade_megaphone,upgrade_birdHunting,upgrade_robotDog,upgrade_clinic;
+    const the_dog=document.getElementById("the_dog");
     
     //Other
-    var clinicItems = [];
+    var clinicItems = [],_no=false;
 
     function mainDogClick (hardFx) {
 		
         bark(mainDogIncrementor);
         ++fxTracker;
         chkEffects(hardFx);
-
+        
     }
 
     function bark (increment) {
-
+		
         barks+=((increment>0)?increment*(1+(megaphones/10)):increment);
-        //TODO:: Play bark sound (maybe? lol)
+        if (adderall) {
+        	barks+=((increment>0)?(increment/5):0);
+        	the_dog.style.transform="rotate("+dog_rotate.toString()+"deg)";
+        	dog_rotate+=(Math.random()>0.49)?7:-7;
+        }
         document.getElementById("barks").innerHTML=Math.floor(barks).toString();
 
         chkUpgradesUpdate();
@@ -117,7 +127,7 @@
 
         /*
                     Ideas for future purchases:
-                    Something for 100k, milestone at 30k
+                    Something for 100k, milestone at 30k, unlocks upgrades facility with things like on click earn +1 and 10% of your friends and all upgrades increase in 1.5* in cost per purchase.
                     Human mind control machine (250k cost, maybe makes everything cheaper by /2 per purchase apart from itself, unlock casino as side effect and execute in way similar to clinic, also (unless first purchase) 25% chance to fail, if it does fail 50/50 to: mind control unexpected behaviour, humans went insane or mind control didn't work, humans are mad and taking 7% of your barks per second for 60 seconds)
         			Something for 2.5m,milestone at 300k
         			Something for 10m, adds semi often minigame where if you lose then you lose the game and are forced to restart(or set back far?), semi hard
@@ -126,13 +136,13 @@
         
         //Also TODO:: add a question mark symbol that when hovered over or clicked shows the user information about the item.
         //Also TODO:: make upgrades more expensive overtime?
-        //Also TODO:: disable selecting elements on screen
+        //Also TODO:: disable selecting elements on screen, dragging elements & right clicking
         //Also TODO:: add a box with z-index 1 higher than pink alert text over the dog, with cursor:pointer, transparent and make that be the thing you click to bark
         //Also TODO:: add multiplier like buy 1x 2x 10x 50x 100x at a time, at purchase add new func with while loop of buy whatever to include the difference for price increment
         //Also TODO:: bird hunting reward needs to be reevaluated.. sometimes way too high sometimes way too low, also make birds appear slightly more often
         //Also TODO:: maybe random chance 1%~ to spawn a gold nugget increasing barks by 10%(calculated at spawntime) every hardFx click?
-		
-        /*
+        //Also TODO:: add sound fx
+	    /*
                         Rough ideas for price increases:
                         Friend             *1.1 of original
                         Food               *1.1 of original
@@ -158,7 +168,7 @@
             }
         }
 
-        if (fxTracker%10==0) {
+        if (fxTracker%10==0||adderall) {
 
             if (dogFood!=0) {
 
@@ -220,8 +230,9 @@
 
 
         }
-
-        if ((fxTracker%50==0)&&(birdHuntingGroups>0)) {
+		
+		if (birdHuntingGroups>0)
+        if ((fxTracker%50==0)||(adderall&&fxTracker%5==0)) {
             
             if (!(experiencedBirdHunting)&&hardFx) {
 
@@ -585,7 +596,7 @@
 
                 --i0;
 
-            },19);
+            },speed);
 
         }
 
@@ -616,7 +627,7 @@
         
         ++robotDogs;
         
-        setInterval (mdF,10000);
+        robotTasks.push( setInterval ( mdF , 10000 ) );
         
     }
 
@@ -649,10 +660,8 @@
         
         $(cl).click(openClinicScreen);
         
-        
-            
     }
-
+	
     function openClinicScreen () {
     	
     	if (oxyCotton) {
@@ -674,8 +683,8 @@
         $(x).click(exitClinic);
         
         addClinicItem("Oxycodone","This painkiller medicine will help clear up all pain and negative effects. Oxycodone will also make it easier for you to collect moving items. Effects last 2 minutes. Potential temporary side effects. Oxycodone costs you 100 friends on purchase.",purchaseOxycodone);
-        addClinicItem("Adderall","This stimulant medicine will make you get things done much quicker. Effects last 45 seconds. Potential temporary side effects. Adderall costs 1 megaphone on purchase and you will lose a small percentage of barks overtime during the effects.");
-        addClinicItem("Acid","This hallucinogenic medicine will cause you to understand humand mind control better, causing any mind control devices you purchase to be more effective while you are under the effects of acid. Effects last 3 minutes. There are other temporary undisclosed effects. Acid requires you to eat 50 dog food on purchase.");
+        addClinicItem("Adderall","This stimulant medicine will make you get things done much quicker. Effects last 45 seconds. Potential temporary side effects. Adderall costs 1 megaphone on purchase and you will lose a small percentage of barks overtime during the effects.",purchaseAdderall);
+        addClinicItem("Acid","This hallucinogenic medicine will cause you to understand humand mind control better, causing any mind control devices you purchase to be more effective while you are under the effects of acid. Effects last 3 minutes. There are other temporary undisclosed effects. Acid requires you to eat 50 dog food on purchase.",purchaseAcid);
         addClinicItem("Psilocybin","This hallucinogenic medicine will cause clicking the main dog to be more effective. Effects last 3 minutes. There are other undisclosed temporary effects. Psilocybin requires you to eat 50 dog food on purchase.");
         addClinicItem("Dimethyltryptamine","Nobody knows much about dimethyltryptamine, so the dog secretaries are freely handing it out to anyone experienced who has taken all oxycodone, adderall, acid and psilocybin at least once.");
         
@@ -685,24 +694,25 @@
         //top, and it's height:10%. Then, the drug will be left at 90%top, 10% height and when clicked the effects will ensue.
         
         //Effects of oxy cotton (cheapest, costs 100 friends, 2 minute length):
-        //Reduce negative effects/subtractions relative to total clinics (such as subtracting by friends when collecting food)
-        //Falling food & birds move slower
-        //Everything on screen becomes slightly blurry
-        //Can't visit pet shop, it will say "You decided to stay home where it is nice, warm and cozy."
-        //You only lose half of your barks when you die to gas
+        //Reduce negative effects/subtractions relative to total clinics (such as subtracting by friends when collecting food) (Done)
+        //Falling food & birds move slower (Done)
+        //Everything on screen becomes slightly blurry (Done)
+        //Can't visit pet shop, it will say "You decided to stay home where it is nice, warm and cozy." (Done)
+        //You only lose half of your barks when you die to gas (Done)
         //If negative debuffs like pain are added (ie human mind control failure) then this will fix it
         
         //Effects of adderall (costs 1 megaphone and you will lose 0.5% (1/200) of your current barks every second for the duration of the drug, 45 second length)
-        //When you click the dog, he barks twice
-        //Robot dogs work quicker relative to total clinics
-        //Birds and falling food move twice as quick
-        //Barking will cause the main dog to shake
-        //Cracked eyes will pop out on top of the dogs eyes
-        //Moving particles have wind trails behind them
+        //Barking gives it's normal increase plus 20% disregarding megaphones (Done)
+        //Robot dogs work quicker relative to total clinics (Done)
+        //Birds and falling food move twice as quick (Done)
+        //Barking will cause the main dog to shake (Done)
+        //Cracked eyes will pop out on top of the dogs eyes (Done)
+        //Moving particles have wind trails behind them 
+        //Dog food and birds come quicker regarding fxTracker (Done)
         
         //Effects of acid (cost 50 food, 3 minute length)
-        //Background smoothly changing colour gradient
-        //Spaceships sometimes come by and if collected you gain friends relative to total clinics (100 friends * (total clinics/10))
+        //Background smoothly changing colour gradient (Done)
+        //UFO's sometimes come by and if collected you gain friends relative to total clinics (100 friends * (total clinics/10))
         //Purchasing human mind control devices are more effective during the effects relative to total clinics
         
         //Effects of psilocybin (cost 50 food, 3 minute length)
@@ -820,7 +830,7 @@
     
     function purchaseAdderall () {
     	
-    	if (!(megaphone>0)) {
+    	if (!(megaphones>0)) {
     		
     		displayBox("You were not able to afford the adderall! You need 1 megaphone.","exitClinic()");
     		return;
@@ -828,7 +838,7 @@
     	}
     	
     	exitClinic();
-    	--megaphone;
+    	--megaphones;
     	
     	takeAdderall();
     	
@@ -839,7 +849,7 @@
     	if (adderall) {
     		
             addAdderall();
-            displayBox("The pill did nothing! You are already under the effects of oxycodone.","remOverlay()");
+            displayBox("The pill did nothing! You are already under the effects of adderall.","remOverlay()");
     		return;
     		
     	}
@@ -847,14 +857,326 @@
     	adderall=true;
     	alert("You took adderall");
     	++adderallUses;
+    	the_dog.setAttribute("src","the adderall dog.png");
+    	
+    	var kys = [];
+    	
+    	robotTasks.forEach(function(t) {
+    		
+    		clearInterval(t);
+    		mdF();
+    		kys.push( setInterval ( mdF , Math.floor ( 10000 / ( Math.ceil ( clinics * 0.33 ) + 1 ) ) ) );
+    		
+    	});
+    	
+    	robotTasks=[];
+    	
+    	var ee=0;
         
-    	var ctDown=setTimeout(function () {
+    	var ctDown=setInterval(function () {
             
-            adderall=false;
-            alert("You can feel the adderall effects fade");
+            bark(-(barks*0.005));
             
-            clearTimeout(ctDown);
+            if (ee==45) {
+            
+	            adderall=false;
+	            alert("You can feel the adderall effects fade");
+	            the_dog.style.transform="";
+	            the_dog.style.top="calc(50% - 160px)";
+	            the_dog.style.left="calc(50% - 240px)";
+	    		the_dog.setAttribute("src","the dog.png");
+	            dog_rotate=7;
+	            
+	            kys.forEach(function(t) {
+	            	
+	            	clearInterval(t);
+	            	robotTasks.push( setInterval ( mdF , 10000 ) );
+	            	
+	            });
+	            
+	            clearTimeout(ctDown);
+	            
+        	}
+        	
+        	++ee;
 
-        },45000);
+        },1000);
     	
     }
+    
+    //TODO:: add background, like outside or something, and make overall game look nice
+    function mainDogAnim (e) {
+    	
+    	if(e.which!=1)return;
+    	if($(the_dog).is(':animated')) { _no=true; return; }
+    	
+    	$(the_dog).animate({
+    		
+    		width:520,
+    		height:350,
+    		top:"+=10px",
+    		left:"+=6px"
+    		
+    	},33,null);
+    	
+    }
+    
+    function mainDogAnim0 () {
+    	
+    	if (_no) { _no=false; return; }
+    	
+    	$(the_dog).animate({
+    		
+    		width:540,
+	        height:360,
+	        top:"-=10px",
+	        left:"-=6px"
+    		
+    	},33,null);
+    	
+    }
+    
+    function mainDogAnim1 () {
+    	
+    	//make bigger
+    	$(the_dog).animate({
+    		width:540,
+    		height:360,
+    		left:"-=14",
+    		top:"-=9.5"
+    	},250,null);
+    	
+    }
+    
+    function mainDogAnim2 () {
+    	
+    	//make smaller
+    	$(the_dog).stop(true,true);
+    	var dogWidth=parseInt(the_dog.style.width),dogHeight=parseInt(the_dog.style.height);
+    	$(the_dog).animate({
+	    	
+	        width:512,
+	        height:341,
+	        top:"+="+((dogHeight-341)/2).toString(),
+	        left:"+="+((dogWidth-512)/2).toString()
+    		
+    	},250,null);
+    	
+    	the_dog.style.width="512px",the_dog.style.height="341px";
+    	
+    }
+    
+    function purchaseAcid () {
+    	
+    	 if (!(food>49)) {
+    		
+    		displayBox("You were not able to afford the acid! You need 50 dog food (Beg for food)","exitClinic()");
+    		return;
+    		
+    	}
+    	
+    	exitClinic();
+    	food-=50;
+    	
+    	takeAcid();
+    	
+    }
+    
+    function takeAcid () {
+    	
+    	var r=0,g=0,b=0;
+    	
+    	alert("You dropped acid");
+    	
+    	var bgC = setInterval (function () {
+    	
+			if (r <= 255 && g == 0 && b == 0) ++r;
+			if (r == 255 && b == 0 && g <= 255) ++g;
+			if (r == 255 && g == 255 && b <= 255) ++b;
+			if (b == 255 && g == 255 && r > 0) --r;
+			if (r == 0 && b == 255 && g > 0) --g;
+			if (r == 0 && g == 0 && b > 0) --b;
+			
+			document.body.style.background="rgb("+r.toString()+","+g.toString()+","+b.toString()+")";
+			
+		},2);
+		
+		var innerUfoIt,alienDropping,alienWalking,ufoIt = setInterval (function () {
+			
+			var ufo=document.createElement("img");
+			ufo.setAttribute("src","ufo.png");
+			ufo.setAttribute("id","ufo");
+			document.body.appendChild(ufo);
+			
+			if (!(seenUfo)) {
+				
+				seenUfo=true;
+				
+	            addOverlay();
+	            displayBox("A UFO has appeared on your screen! Run your mouse over it to capture it.","remOverlay()");
+				
+			}
+			
+			$(ufo).mouseover(function () {
+				
+				var exp=document.createElement("img"),down=parseInt(ufo.style.top)+6,alien=document.createElement("img"),x=parseInt(ufo.style.left);
+				exp.setAttribute("id","ufo_explosion");
+				exp.setAttribute("src","explosion.png");
+				exp.style.left=parseInt(ufo.style.left).toString()+"%";
+				exp.style.top=parseInt(ufo.style.top).toString()+"%";
+				
+				document.body.removeChild(ufo);
+				document.body.appendChild(exp);
+				alert("You hear a UFO crash into the ground in the distance");
+				
+				var clearExpTm = setTimeout (function () {
+					
+					document.body.removeChild(exp);
+					clearInterval(innerUfoIt);
+					clearTimeout(clearExpTm);
+					
+				},1000);
+				
+				alien.setAttribute("class","ufo_alien");
+				alien.setAttribute("src","roger_smith_parachute.png");
+				alien.style.top=(down-6).toString()+"%";
+				alien.style.left=x.toString()+"%";
+				$(alien).click(function () {
+					
+					var friendsEarned=Math.floor(Math.random()*45)+15;
+					friends+=friendsEarned;
+		            addOverlay();
+		            displayBox("An ancient alien just brought you "+friendsEarned.toString()+" of his alien dogs in return for you letting him go back to his planet (+"+friendsEarned.toString()+" friends)","remOverlay()");
+		            alert("You welcome your new alien dog friends");
+		            clearInterval(alienDropping);
+		            document.body.removeChild(alien);
+					
+				});
+				document.body.appendChild(alien);
+				
+				alienDropping = setInterval (function () {
+					
+					if (down>83) { 
+						clearInterval(alienDropping);
+						alien.setAttribute("src","roger_smith.png");
+						alien.style.top="84%";
+						alien.style.transform="scaleX(-1)";
+						var alienX=parseInt(alien.style.left),direction=0,alienY=parseInt(alien.style.top);
+						alienWalking = setInterval (function () {
+							
+							//0=right
+							//1=up
+							//2=left
+							//3=down
+							
+							switch (direction) {
+								
+								case 0:
+									alienX+=0.33;
+									alien.style.left=alienX.toString()+"%";
+									if (alienX>89) {
+										++direction;
+										alien.style.transform="rotate(270deg) scaleX(-1)";
+									}
+									break;
+								
+								case 1:
+									alienY-=0.33;
+									alien.style.top=alienY.toString()+"%";
+									if (alienY<1) {
+										
+										++direction;
+										alien.style.transform="rotate(180deg) scaleX(-1)";
+										
+									}
+									break;
+								
+								case 2:
+									alienX-=0.33;
+									alien.style.left=alienX.toString()+"%";
+									if (alienX<1) {
+										++direction;
+										alien.style.transform="rotate(90deg) scaleX(-1)";
+									}
+									break;
+								
+								case 3:
+									alienY+=0.33;
+									alien.style.top=alienY.toString()+"%";
+									if (alienY>84) {
+										direction=0;
+										alien.style.transform="scaleX(-1)";
+									}
+									break;
+								
+								default:
+									break;
+								
+							}
+							
+						},17);
+						
+					}
+					
+					alien.style.top=down.toString()+"%";
+					
+					++down;
+					
+				},17);
+				
+			});
+			
+			var stageCtr=0,subCtr=0,subCtr0=0,subCtr1=0,radians;
+			
+			innerUfoIt = setInterval (function () {
+				
+				if (stageCtr<50) {
+					
+					ufo.style.left=(100-(stageCtr*1.2)).toString()+"%";
+					ufo.style.top=(70-(stageCtr/5)).toString()+"%";
+										
+				}
+				else if (stageCtr<100) {
+					
+					++subCtr;
+					ufo.style.left=(41.2+(subCtr*0.5)).toString()+"%";
+										
+				}
+				else if (stageCtr<220) {
+					
+					subCtr0+=0.5;
+					ufo.style.top=(parseInt(ufo.style.top)-subCtr0).toString()+"%";
+					
+				}
+				else if (stageCtr<320) {
+					
+					++subCtr1;
+					radians=subCtr1*(Math.PI/180);
+					ufo.style.left=(77.2*Math.cos(radians)).toString()+"%";
+					ufo.style.top=(70.2*Math.sin(radians)).toString()+"%";
+					
+				}
+				else if (stageCtr==321) {
+					
+					clearInterval(innerUfoIt);
+					document.body.removeChild(ufo);
+					return;
+					
+				}
+				
+				++stageCtr;
+				
+			},16.7);
+			
+		},18000);
+		
+		var tmt = setTimeout (function () {
+			
+			clearInterval(bgC);
+			clearInterval(ufoIt);
+			document.body.style.background="#FFFFFF";
+			clearTimeout(tmt);
+			
+		},180000);
+		
+	}

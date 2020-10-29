@@ -146,6 +146,15 @@ body {
 	
 }
 
+.ufo_alien {
+	
+	position:absolute;
+	height:16%;
+	width:10%;
+	cursor:pointer;
+	
+}
+
 #the_dog {
     
     margin: 0px;
@@ -276,5 +285,23 @@ body {
 	border-width:3px;
 	cursor:pointer;
 	z-index:5;
+	
+}
+
+#ufo {
+	
+	position:absolute;
+	height:10%;
+	width:10%;
+	top:70%;
+	left:100%;
+	
+}
+
+#ufo_explosion {
+	
+	position:absolute;
+	height:10%;
+	width:10%;
 	
 }
